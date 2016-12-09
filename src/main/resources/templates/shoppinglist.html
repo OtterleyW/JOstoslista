@@ -41,7 +41,7 @@
 
             <h2>Lisää ostos</h2>
 
-            <form th:action="@{/reservations}" method="POST">
+            <form th:action="@{/shoppinglist/{id}(id=${shoppinglist.id})}" method="POST">
                 <div class="form-group">
                     <label for="name">Nimi:</label>
                     <input type="text" class="form-control" name="name" />
@@ -50,12 +50,12 @@
                     <label for="type">Tyyppi:</label>
                     <input type="text" class="form-control" name="type" />
                 </div>
-                <input type="submit" class="btn btn-default" value="Lisää listalle">
+                <input type="submit" class="btn btn-default" value="Lisää listalle"></input>
             </form>
 
             <hr />
             <h2>Ostokset</h2>
-            <table class="table table-striped">
+            <table class="table table-striped" th:if="${items != null}">
                 <thead>
                     <tr>
                         <th>Ostos</th>
@@ -68,7 +68,7 @@
                     <tr th:each="item : ${items}">
                         <td class="ostos"><span th:text="${item.name}">Nimi</span></td>
                         <td><span th:text="${item.type}">Tyyppi</span></td>
-                        <td><form th:action="@{/{item}(item=${item.id})}" th:method="DELETE"><input type="submit" class="btn btn-default" value="Ostettu!"></form></td>
+                        <td><form th:action="@{/{item}(item=${item.id})}" th:method="DELETE"><input type="submit" class="btn btn-default" value="Ostettu!"></input></form></td>
                     </tr>
                 </tbody>
             </table>

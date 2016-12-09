@@ -9,6 +9,7 @@ import groovy.otter.jostoslista.domain.Item;
 import groovy.otter.jostoslista.domain.ShoppingList;
 import groovy.otter.jostoslista.repository.ItemRepository;
 import groovy.otter.jostoslista.repository.ShoppingListRepository;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,12 +29,23 @@ public class ShoppingListController {
     
     @Autowired
     private ShoppingListRepository shoppingListRepository;
+    @Autowired
     private ItemRepository itemRepository;
     
     @RequestMapping(value = "/myshoppinglists", method = RequestMethod.GET)
     public String myShoppingLists(Model model) {
         model.addAttribute("shoppinglists", this.shoppingListRepository.findAll());
         return "myshoppinglists";
+    }
+    
+    @RequestMapping(value = "/myshoppinglists", method = RequestMethod.POST)
+    public String newShoppingList(@RequestParam String listname) {
+        ShoppingList list = new ShoppingList();
+        list.setName(listname);
+        Date date = new Date();
+        list.setCreatedAt(date);
+        this.shoppingListRepository.save(list);
+        return "redirect:/myshoppinglists";
     }
     
     @RequestMapping(value="/shoppinglist/{id}", method = RequestMethod.GET)
@@ -49,11 +61,10 @@ public class ShoppingListController {
         item.setName(name);
         item.setType(type);
         this.itemRepository.save(item);
-        
         ShoppingList list = this.shoppingListRepository.findOne(id);
         list.addItem(item);
         this.shoppingListRepository.save(list);
          
-        return "redirect:/shoppinglist";
+        return "redirect:/shoppinglist/"+list.getId();
     }
 }
