@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Ostoslista</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+        <style>
+            .container {
+                max-width: 500px;
+            }
+
+            .ostos {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">JOstoslista</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#">Kaikki ostoslistat</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Kirjaudu sisään</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container">
+
+
+            <h1>Omat ostoslistat</h1>
+
+
+            <ul>
+                <li th:each="shoppinglist: ${shoppinglists}">
+                    <a th:href="@{/{shoppinglist}(shoppinglist=${shoppinglist.id})}" th:text="${shoppinglist.name}">Ostoslistan nimi</a> (<span th:text="${#dates.format(shoppinglist.createdAt, 'yyyy-MM-dd')}"></span>)</a>
+                </li>
+            </ul>
+
+        </div>
+    </body>
+</html>

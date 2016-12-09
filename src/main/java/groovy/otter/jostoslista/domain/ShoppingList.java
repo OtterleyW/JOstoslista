@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,13 +37,27 @@ public class ShoppingList extends AbstractPersistable<Long>{
         this.name = name;
     }
     
-    private Date getCreatedAt(){
+    public Date getCreatedAt(){
         return this.createdAt;
     }
     
-    private void setCreatedAt(Date date){
+    public void setCreatedAt(Date date){
         this.createdAt = date;
     }
+    
+    public List<Item> getItems(){
+        return this.items;
+    }
+    
+    public void setItems(List<Item> items){
+        this.items = items;
+    }
+    
+    public void addItem(Item item){
+        this.items.add(item);
+    }
+    
+    
     
     
 }

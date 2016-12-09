@@ -8,6 +8,7 @@ package groovy.otter.jostoslista.domain;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
  *
@@ -15,7 +16,7 @@ import javax.persistence.ManyToMany;
  */
 
 @Entity
-public class Item {
+public class Item extends AbstractPersistable<Long>{
     
     private String name;
     private String type;
@@ -37,6 +38,14 @@ public class Item {
     
     public void setType(String type){
         this.type = type;
+    }
+    
+    public List<ShoppingList> getShoppingLists() {
+        return this.shoppingLists;
+    }
+
+    public void setShopppingLists(List<ShoppingList> shoppingLists) {
+        this.shoppingLists = shoppingLists;
     }
     
 }

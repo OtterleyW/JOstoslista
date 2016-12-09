@@ -14,11 +14,6 @@
             .ostos {
                 font-weight: bold;
             }
-
-
-
-
-
         </style>
     </head>
     <body>
@@ -39,19 +34,23 @@
         <div class="container">
 
 
-            <h1>Hieno ostoslista</h1>
+            <h1><span th:text="${shoppinglist.name}">Ostoslistan nimi</span></h1>
+            <p>
+                Luotu <span th:text="${#dates.format(shoppinglist.createdAt, 'yyyy-MM-dd')}">00.00.0000</span>
+            </p>
 
             <h2>Lisää ostos</h2>
-            <form>
+
+            <form th:action="@{/reservations}" method="POST">
                 <div class="form-group">
-                    <label for="usr">Nimi:</label>
-                    <input type="text" class="form-control" id="item" />
+                    <label for="name">Nimi:</label>
+                    <input type="text" class="form-control" name="name" />
                 </div>
                 <div class="form-group">
-                    <label for="pwd">Tyyppi:</label>
-                    <input type="text" class="form-control" id="type" />
+                    <label for="type">Tyyppi:</label>
+                    <input type="text" class="form-control" name="type" />
                 </div>
-                <button type="submit" class="btn btn-default">Lisää</button>
+                <input type="submit" class="btn btn-default" value="Lisää listalle">
             </form>
 
             <hr />
@@ -61,24 +60,15 @@
                     <tr>
                         <th>Ostos</th>
                         <th>Tyyppi</th>
+                        <th></th>
 
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="ostos">Ostos 1</td>
-                        <td>HeVi</td>
-                        <td><button type="button" class="btn btn-default">Ostettu</button></td>
-                    </tr>
-                    <tr>
-                        <td class="ostos">Ostos 2</td>
-                        <td>Maitotuotteet</td>
-                        <td><button type="button" class="btn btn-default">Ostettu</button></td>
-                    </tr>
-                    <tr>
-                        <td class="ostos">Ostos 3</td>
-                        <td>Pakaste</td>
-                        <td><button type="button" class="btn btn-default">Ostettu</button></td>
+                    <tr th:each="item : ${items}">
+                        <td class="ostos"><span th:text="${item.name}">Nimi</span></td>
+                        <td><span th:text="${item.type}">Tyyppi</span></td>
+                        <td><form th:action="@{/{item}(item=${item.id})}" th:method="DELETE"><input type="submit" class="btn btn-default" value="Ostettu!"></form></td>
                     </tr>
                 </tbody>
             </table>
