@@ -5,7 +5,9 @@
  */
 package groovy.otter.jostoslista.domain;
 
+import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 
 /**
  *
@@ -17,6 +19,9 @@ public class Item {
     
     private String name;
     private String type;
+    @ManyToMany(mappedBy = "items")
+    private List<ShoppingList> shoppingLists;
+
     
     public String getName(){
         return this.name;

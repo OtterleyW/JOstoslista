@@ -25,6 +25,8 @@ public class ShoppingList extends AbstractPersistable<Long>{
     private String name;
     @Temporal(TemporalType.DATE)
     private Date createdAt;
+    @ManyToMany
+    private List<Item> items;
     
     public String getName(){
         return this.name;
