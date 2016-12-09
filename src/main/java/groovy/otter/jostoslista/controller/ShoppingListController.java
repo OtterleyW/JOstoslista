@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package groovy.otter.jostoslista;
+package groovy.otter.jostoslista.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
-public class JOstoslistaController {
+public class ShoppingListController {
     @RequestMapping("/")
     public String home() {
         return "index";
