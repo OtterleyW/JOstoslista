@@ -59,10 +59,12 @@ public class ShoppingListController {
     public String newShoppingList(@RequestParam String listname) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
+        if(this.shopperRepository.findByName(username) == null){
         Shopper shopper = new Shopper();
         shopper.setName(username);
         this.shopperRepository.save(shopper);
-
+        }
+        
         ShoppingList list = new ShoppingList();
         list.setName(listname);
         Date date = new Date();
