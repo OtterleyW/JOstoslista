@@ -39,6 +39,13 @@
                 Luotu <span th:text="${#dates.format(shoppinglist.createdAt, 'yyyy-MM-dd')}">00.00.0000</span>
             </p>
 
+            <div th:if="${shoppers != null}">
+                <h3>Omistajat</h3>
+                <p th:each="shopper : ${shoppers}">
+                    <span th:text="${shopper.name}">Nimi</span>
+                </p>
+            </div>
+
             <h2>Lisää ostos</h2>
 
             <form th:action="@{/shoppinglist/{id}(id=${shoppinglist.id})}" method="POST">

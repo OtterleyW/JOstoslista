@@ -65,7 +65,7 @@ public class ShoppingList extends AbstractPersistable<Long>{
         return this.shoppers;
     }
 
-    public void setShoppers(List<Shopper> hoppers) {
+    public void setShoppers(List<Shopper> shoppers) {
         this.shoppers = shoppers;
     }
 

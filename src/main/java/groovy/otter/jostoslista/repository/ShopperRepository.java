@@ -6,6 +6,7 @@
 package groovy.otter.jostoslista.repository;
 
 import groovy.otter.jostoslista.domain.Shopper;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -13,5 +14,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Jenni
  */
 public interface ShopperRepository extends JpaRepository<Shopper, Long>{
-    
+    List<Shopper> findByName(String nimi);
+
 }
