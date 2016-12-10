@@ -14,6 +14,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Jenni
  */
 public interface ShopperRepository extends JpaRepository<Shopper, Long>{
-    List<Shopper> findByName(String nimi);
+    Shopper findByName(String nimi);
 
 }

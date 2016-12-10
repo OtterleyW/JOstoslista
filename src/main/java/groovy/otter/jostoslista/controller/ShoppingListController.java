@@ -42,15 +42,16 @@ public class ShoppingListController {
     public String myShoppingLists(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
+
         List<ShoppingList> ownLists = new ArrayList<ShoppingList>();
-        
-        for (ShoppingList sl : this.shoppingListRepository.findAll()){
-            for(Shopper shopper : sl.getShoppers()){
-                if(shopper.getName() == username){
+        for (ShoppingList sl : this.shoppingListRepository.findAll()) {
+            for (Shopper shopper : sl.getShoppers()) {
+                if (shopper.getName().equals(username)) {
                     ownLists.add(sl);
                 }
             }
         }
+
         model.addAttribute("shoppinglists", ownLists);
         return "myshoppinglists";
     }
@@ -59,19 +60,26 @@ public class ShoppingListController {
     public String newShoppingList(@RequestParam String listname) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        if(this.shopperRepository.findByName(username) == null){
-        Shopper shopper = new Shopper();
-        shopper.setName(username);
-        this.shopperRepository.save(shopper);
+
+        if (this.shopperRepository.findByName(username) == null) {
+            Shopper shopper = new Shopper();
+            shopper.setName(username);
+            this.shopperRepository.save(shopper);
         }
-        
+
         ShoppingList list = new ShoppingList();
         list.setName(listname);
         Date date = new Date();
         list.setCreatedAt(date);
-        list.setShoppers(this.shopperRepository.findByName(username));
+        if (list.getShoppers() == null) {
+            List<Shopper> shoppers = new ArrayList<Shopper>();
+            shoppers.add(this.shopperRepository.findByName(username));
+            list.setShoppers(shoppers);
+        } else {
+            list.addShopper(this.shopperRepository.findByName(username));
+        }
         this.shoppingListRepository.save(list);
-      
+
         return "redirect:/myshoppinglists";
     }
 
@@ -95,7 +103,7 @@ public class ShoppingListController {
 
         return "redirect:/shoppinglist/" + list.getId();
     }
-    
+
     @RequestMapping(value = "/shoppinglist/{id}/item/{itemid}", method = RequestMethod.DELETE)
     public String deleteItem(@PathVariable Long id, @PathVariable Long itemid) {
         ShoppingList list = this.shoppingListRepository.findOne(id);
@@ -104,7 +112,7 @@ public class ShoppingListController {
         items.remove(item);
         list.setItems(items);
         this.shoppingListRepository.save(list);
-      
+
         return "redirect:/shoppinglist/" + list.getId();
     }
 }
