@@ -28,6 +28,8 @@ public class ShoppingList extends AbstractPersistable<Long>{
     private Date createdAt;
     @ManyToMany
     private List<Item> items;
+    @ManyToMany
+    private List<Shopper> shoppers;
     
     public String getName(){
         return this.name;
@@ -57,6 +59,17 @@ public class ShoppingList extends AbstractPersistable<Long>{
         this.items.add(item);
     }
     
+    public List<Shopper> getShoppers() {
+        return this.shoppers;
+    }
+
+    public void setShoppers(List<Shopper> hoppers) {
+        this.shoppers = shoppers;
+    }
+
+    public void addShopper(Shopper shopper) {
+        this.shoppers.add(shopper);
+    }
     
     
     
