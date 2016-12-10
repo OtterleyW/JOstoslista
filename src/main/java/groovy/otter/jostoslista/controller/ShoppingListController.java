@@ -81,4 +81,16 @@ public class ShoppingListController {
 
         return "redirect:/shoppinglist/" + list.getId();
     }
+    
+    @RequestMapping(value = "/shoppinglist/{id}/item/{itemid}", method = RequestMethod.DELETE)
+    public String deleteItem(@PathVariable Long id, @PathVariable Long itemid) {
+        ShoppingList list = this.shoppingListRepository.findOne(id);
+        Item item = this.itemRepository.findOne(itemid);
+        List<Item> items = list.getItems();
+        items.remove(item);
+        list.setItems(items);
+        this.shoppingListRepository.save(list);
+      
+        return "redirect:/shoppinglist/" + list.getId();
+    }
 }
