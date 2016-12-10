@@ -23,10 +23,10 @@
                     <a class="navbar-brand" href="#">JOstoslista</a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li><a href="#">Kaikki ostoslistat</a></li>
+                    <li><a href="/myshoppinglists">Kaikki ostoslistat</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Kirjaudu sisään</a></li>
+                    <li><form method="post" action="#" th:action="@{/logout}"><input type="submit" name="logout" value="Logout"/></form></li>
                 </ul>
             </div>
         </nav>
@@ -34,7 +34,7 @@
         <div class="container">
 
 
-            <h1>Omat ostoslistat</h1>
+            <h1>Omat ostoslistat - <span sec:authentication="name">Username</span></h1>
 
 
             <ul>

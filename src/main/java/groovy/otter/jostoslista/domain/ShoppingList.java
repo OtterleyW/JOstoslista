@@ -5,6 +5,7 @@
  */
 package groovy.otter.jostoslista.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -30,6 +31,7 @@ public class ShoppingList extends AbstractPersistable<Long>{
     private List<Item> items;
     @ManyToMany
     private List<Shopper> shoppers;
+   
     
     public String getName(){
         return this.name;
