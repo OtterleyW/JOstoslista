@@ -11,6 +11,7 @@ import groovy.otter.jostoslista.domain.ShoppingList;
 import groovy.otter.jostoslista.repository.ItemRepository;
 import groovy.otter.jostoslista.repository.ShopperRepository;
 import groovy.otter.jostoslista.repository.ShoppingListRepository;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,18 @@ public class ShoppingListController {
 
     @RequestMapping(value = "/myshoppinglists", method = RequestMethod.GET)
     public String myShoppingLists(Model model) {
-        model.addAttribute("shoppinglists", this.shoppingListRepository.findAll());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        List<ShoppingList> ownLists = new ArrayList<ShoppingList>();
+        
+        for (ShoppingList sl : this.shoppingListRepository.findAll()){
+            for(Shopper shopper : sl.getShoppers()){
+                if(shopper.getName() == username){
+                    ownLists.add(sl);
+                }
+            }
+        }
+        model.addAttribute("shoppinglists", ownLists);
         return "myshoppinglists";
     }
 
