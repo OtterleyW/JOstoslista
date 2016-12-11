@@ -48,13 +48,19 @@
 
             <h2>Lisää ostos</h2>
 
-            <form th:action="@{/shoppinglist/{id}(id=${shoppinglist.id})}" method="POST">
+            <form th:action="@{/shoppinglist/{id}(id=${shoppinglist.id})}" th:object="${item}" method="POST">
                 <div class="form-group">
                     <label for="name">Nimi:</label>
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                        Nimi ei voi olla tyhjä
+                    </div>
                     <input type="text" class="form-control" name="name" />
                 </div>
                 <div class="form-group">
                     <label for="type">Tyyppi:</label>
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">
+                        Nimi ei voi olla tyhjä
+                    </div>
                     <input type="text" class="form-control" name="type" />
                 </div>
                 <input type="submit" class="btn btn-default" value="Lisää listalle"></input>

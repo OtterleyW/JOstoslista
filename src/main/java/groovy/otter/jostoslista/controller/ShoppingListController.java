@@ -41,9 +41,14 @@ public class ShoppingListController {
     @Autowired
     private ShopperRepository shopperRepository;
 
-    @ModelAttribute
+    @ModelAttribute("shoppingList")
     private ShoppingList getShoppingList() {
         return new ShoppingList();
+    }
+
+    @ModelAttribute("item")
+    private Item getItem() {
+        return new Item();
     }
 
     @RequestMapping(value = "/myshoppinglists", method = RequestMethod.GET)
@@ -53,7 +58,7 @@ public class ShoppingListController {
     }
 
     @RequestMapping(value = "/myshoppinglists", method = RequestMethod.POST)
-    public String newShoppingList(@Valid @ModelAttribute ShoppingList shoppingList, BindingResult bindingResult, @RequestParam String name, Model model) {
+    public String newShoppingList(@Valid @ModelAttribute("shoppingList") ShoppingList shoppingList, BindingResult bindingResult, @RequestParam String name, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("shoppinglists", getOwnShoppingLists());
             return "myshoppinglists";
@@ -81,7 +86,7 @@ public class ShoppingListController {
         }
         this.shoppingListRepository.save(list);
 
-        return "redirect:/shoppinglist/" + list.getId();
+        return "redirect:/myshoppinglists";
     }
 
     @RequestMapping(value = "/shoppinglist/{id}", method = RequestMethod.GET)
@@ -106,14 +111,21 @@ public class ShoppingListController {
     }
 
     @RequestMapping(value = "/shoppinglist/{id}", method = RequestMethod.POST)
-    public String addItem(@PathVariable Long id, @RequestParam String name, @RequestParam String type) {
+    public String addItem(@Valid @ModelAttribute("item") Item item, BindingResult bindingResult, @PathVariable Long id, @RequestParam String name, @RequestParam String type, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("shoppinglist", this.shoppingListRepository.findOne(id));
+            model.addAttribute("shoppers", this.shoppingListRepository.findOne(id).getShoppers());
+            model.addAttribute("items", this.shoppingListRepository.findOne(id).getItems());
+            return "shoppinglist";
+        }
+
         ShoppingList list = this.shoppingListRepository.findOne(id);
         if (checkIfOwner(list)) {
             if (this.itemRepository.findByName(name) == null) {
-                Item item = new Item();
-                item.setName(name);
-                item.setType(type);
-                this.itemRepository.save(item);
+                Item newItem = new Item();
+                newItem.setName(name);
+                newItem.setType(type);
+                this.itemRepository.save(newItem);
             }
             list.addItem(this.itemRepository.findByName(name));
             this.shoppingListRepository.save(list);
@@ -148,8 +160,8 @@ public class ShoppingListController {
 
         return false;
     }
-    
-    private List<ShoppingList> getOwnShoppingLists(){
+
+    private List<ShoppingList> getOwnShoppingLists() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
