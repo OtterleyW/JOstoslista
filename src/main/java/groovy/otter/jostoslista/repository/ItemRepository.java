@@ -13,5 +13,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Jenni
  */
 public interface ItemRepository extends JpaRepository<Item, Long>{
-    
+    Item findByName(String nimi);
 }

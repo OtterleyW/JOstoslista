@@ -108,11 +108,13 @@ public class ShoppingListController {
     public String addItem(@PathVariable Long id, @RequestParam String name, @RequestParam String type) {
         ShoppingList list = this.shoppingListRepository.findOne(id);
         if (checkIfOwner(list)) {
-            Item item = new Item();
-            item.setName(name);
-            item.setType(type);
-            this.itemRepository.save(item);
-            list.addItem(item);
+            if (this.itemRepository.findByName(name) == null) {
+                Item item = new Item();
+                item.setName(name);
+                item.setType(type);
+                this.itemRepository.save(item);
+            }
+            list.addItem(this.itemRepository.findByName(name));
             this.shoppingListRepository.save(list);
         }
 
