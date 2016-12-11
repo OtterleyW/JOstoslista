@@ -136,16 +136,29 @@ public class ShoppingListController {
         ShoppingList list = this.shoppingListRepository.findOne(id);
         //Tarkistaa onko käyttäjä listan omistaja
         if (checkIfOwner(list)) {
-            // Luo uuden itemin, jos saman nimistä ei löydy jo tietokannasta
-            // TODO: tarkista myös itemn tyyppi, jos nimi sama, mutta tyyppi eri, luo uusi Item
+
+            Item newItem = new Item();
+            newItem.setName(name);
+            newItem.setType(type);
+
+            //Jos tietokannasta ei löydy samannimistä itemiä, tallennetaan uusi item
             if (this.itemRepository.findByName(name) == null) {
-                Item newItem = new Item();
-                newItem.setName(name);
-                newItem.setType(type);
                 this.itemRepository.save(newItem);
+            } else {
+                Boolean tallenna = true;
+                //Jos tietokannasta löytyy samannimisiä itemejä, tarkistetaan, löytyykö item, jolla on sama tyyppi
+                for (Item i : this.itemRepository.findByName(name)) {
+                    if (i.getType().equals(type)) {
+                        tallenna = false;
+                    }
+                }
+                if (tallenna) {
+                    this.itemRepository.save(newItem);
+                }
             }
+
             //Tallentaa ostoksen ostoslistalle
-            list.addItem(this.itemRepository.findByName(name));
+            list.addItem(newItem);
             this.shoppingListRepository.save(list);
         }
 

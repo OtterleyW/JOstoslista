@@ -6,6 +6,7 @@
 package groovy.otter.jostoslista.repository;
 
 import groovy.otter.jostoslista.domain.Item;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -14,5 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ItemRepository extends JpaRepository<Item, Long>{
     //Hakee itemin nimen perusteella
-    Item findByName(String nimi);
+    List<Item> findByName(String nimi);
 }
