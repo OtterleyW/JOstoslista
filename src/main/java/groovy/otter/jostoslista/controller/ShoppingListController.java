@@ -90,6 +90,12 @@ public class ShoppingListController {
         model.addAttribute("items", this.shoppingListRepository.findOne(id).getItems());
         return "shoppinglist";
     }
+    
+    @RequestMapping(value = "/shoppinglist/{id}", method = RequestMethod.DELETE)
+    public String deleteShoppingList(@PathVariable Long id) {
+        this.shoppingListRepository.delete(id);
+        return "redirect:/myshoppinglists";
+    }
 
     @RequestMapping(value = "/shoppinglist/{id}", method = RequestMethod.POST)
     public String addItem(@PathVariable Long id, @RequestParam String name, @RequestParam String type) {
