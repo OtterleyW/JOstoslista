@@ -8,6 +8,7 @@ package groovy.otter.jostoslista.domain;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
@@ -16,7 +17,8 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
  */
 @Entity
 public class Shopper extends AbstractPersistable<Long>{
-
+    
+    @NotBlank
     private String name;
     @ManyToMany(mappedBy = "shoppers")
     private List<ShoppingList> shoppingLists;

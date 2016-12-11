@@ -15,6 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Entity
 public class ShoppingList extends AbstractPersistable<Long>{
     
+    @NotBlank
     private String name;
     @Temporal(TemporalType.DATE)
     private Date createdAt;

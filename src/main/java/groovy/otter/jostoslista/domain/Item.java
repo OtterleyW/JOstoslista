@@ -8,38 +8,39 @@ package groovy.otter.jostoslista.domain;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
  *
  * @author Jenni
  */
-
 @Entity
-public class Item extends AbstractPersistable<Long>{
-    
+public class Item extends AbstractPersistable<Long> {
+
+    @NotBlank
     private String name;
+    @NotBlank
     private String type;
     @ManyToMany(mappedBy = "items")
     private List<ShoppingList> shoppingLists;
 
-    
-    public String getName(){
+    public String getName() {
         return this.name;
     }
-    
-    public void setName(String name){
+
+    public void setName(String name) {
         this.name = name;
     }
-    
-    public String getType(){
+
+    public String getType() {
         return this.type;
     }
-    
-    public void setType(String type){
+
+    public void setType(String type) {
         this.type = type;
     }
-    
+
     public List<ShoppingList> getShoppingLists() {
         return this.shoppingLists;
     }
@@ -47,5 +48,5 @@ public class Item extends AbstractPersistable<Long>{
     public void setShopppingLists(List<ShoppingList> shoppingLists) {
         this.shoppingLists = shoppingLists;
     }
-    
+
 }

@@ -14,11 +14,14 @@ import groovy.otter.jostoslista.repository.ShoppingListRepository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,26 +41,24 @@ public class ShoppingListController {
     @Autowired
     private ShopperRepository shopperRepository;
 
+    @ModelAttribute
+    private ShoppingList getShoppingList() {
+        return new ShoppingList();
+    }
+
     @RequestMapping(value = "/myshoppinglists", method = RequestMethod.GET)
     public String myShoppingLists(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-
-        List<ShoppingList> ownLists = new ArrayList<ShoppingList>();
-        for (ShoppingList sl : this.shoppingListRepository.findAll()) {
-            for (Shopper shopper : sl.getShoppers()) {
-                if (shopper.getName().equals(username)) {
-                    ownLists.add(sl);
-                }
-            }
-        }
-
-        model.addAttribute("shoppinglists", ownLists);
+        model.addAttribute("shoppinglists", getOwnShoppingLists());
         return "myshoppinglists";
     }
 
     @RequestMapping(value = "/myshoppinglists", method = RequestMethod.POST)
-    public String newShoppingList(@RequestParam String listname) {
+    public String newShoppingList(@Valid @ModelAttribute ShoppingList shoppingList, BindingResult bindingResult, @RequestParam String name, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("shoppinglists", getOwnShoppingLists());
+            return "myshoppinglists";
+        }
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
@@ -68,7 +69,7 @@ public class ShoppingListController {
         }
 
         ShoppingList list = new ShoppingList();
-        list.setName(listname);
+        list.setName(name);
         Date date = new Date();
         list.setCreatedAt(date);
         if (list.getShoppers() == null) {
@@ -80,7 +81,7 @@ public class ShoppingListController {
         }
         this.shoppingListRepository.save(list);
 
-        return "redirect:/myshoppinglists";
+        return "redirect:/shoppinglist/" + list.getId();
     }
 
     @RequestMapping(value = "/shoppinglist/{id}", method = RequestMethod.GET)
@@ -146,5 +147,20 @@ public class ShoppingListController {
         }
 
         return false;
+    }
+    
+    private List<ShoppingList> getOwnShoppingLists(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        List<ShoppingList> ownLists = new ArrayList<ShoppingList>();
+        for (ShoppingList sl : this.shoppingListRepository.findAll()) {
+            for (Shopper shopper : sl.getShoppers()) {
+                if (shopper.getName().equals(username)) {
+                    ownLists.add(sl);
+                }
+            }
+        }
+        return ownLists;
     }
 }
