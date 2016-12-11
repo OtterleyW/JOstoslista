@@ -59,6 +59,7 @@ public class ShoppingList extends AbstractPersistable<Long>{
         this.items = items;
     }
     
+    //Lisää ostoksen(itemin) ostoslistalle
     public void addItem(Item item){
         this.items.add(item);
     }
@@ -70,7 +71,8 @@ public class ShoppingList extends AbstractPersistable<Long>{
     public void setShoppers(List<Shopper> shoppers) {
         this.shoppers = shoppers;
     }
-
+    
+    //Lisää shopperin(omistajan) ostoslistalle
     public void addShopper(Shopper shopper) {
         this.shoppers.add(shopper);
     }

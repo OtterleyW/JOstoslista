@@ -15,8 +15,10 @@
                 font-weight: bold;
             }
         </style>
+        
     </head>
     <body>
+        <!-- Navigaatio alkaa -->
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -30,11 +32,14 @@
                 </ul>
             </div>
         </nav>
+        <!-- Navigaatio loppuu -->
 
         <div class="container">
 
 
             <h1>Omat ostoslistat - <span sec:authentication="name">Username</span></h1>
+            
+            <!-- Taulukko omista ostoslistoista -->
 
             <table class="table table-striped">
                 <thead>
@@ -54,6 +59,8 @@
                 </tbody>
             </table>
 
+            
+            <!-- Luo uusi ostoslista -lomake -->
 
             <h2>Luo ostoslista</h2>
 

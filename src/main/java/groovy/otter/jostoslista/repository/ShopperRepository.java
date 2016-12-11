@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Jenni
  */
 public interface ShopperRepository extends JpaRepository<Shopper, Long>{
+    //Hakee shopperin nimen perusteella
     Shopper findByName(String nimi);
 
 }

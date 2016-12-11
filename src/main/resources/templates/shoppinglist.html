@@ -15,8 +15,10 @@
                 font-weight: bold;
             }
         </style>
+        
     </head>
     <body>
+        <!-- Navigaatio alkaa -->
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -30,10 +32,11 @@
                 </ul>
             </div>
         </nav>
+        <!-- Navigaatio loppuu -->
 
         <div class="container">
 
-
+            <!-- Ostoslistan tiedot -->
             <h1><span th:text="${shoppinglist.name}">Ostoslistan nimi</span></h1>
             <p>
                 Luotu <span th:text="${#dates.format(shoppinglist.createdAt, 'yyyy-MM-dd')}">00.00.0000</span>
@@ -45,7 +48,8 @@
                     <span th:text="${shopper.name}">Nimi</span>
                 </p>
             </div>
-
+            
+            <!-- Lisää ostos -lomake -->
             <h2>Lisää ostos</h2>
 
             <form th:action="@{/shoppinglist/{id}(id=${shoppinglist.id})}" th:object="${item}" method="POST">
@@ -67,6 +71,9 @@
             </form>
 
             <hr />
+            
+            <!-- Taulukko ostoslistalla olevista ostoksista -->
+            
             <h2>Ostokset</h2>
             <table class="table table-striped" th:if="${items != null}">
                 <thead>

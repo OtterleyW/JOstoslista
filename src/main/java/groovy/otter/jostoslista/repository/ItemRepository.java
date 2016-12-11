@@ -13,5 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Jenni
  */
 public interface ItemRepository extends JpaRepository<Item, Long>{
+    //Hakee itemin nimen perusteella
     Item findByName(String nimi);
 }
