@@ -85,27 +85,36 @@ public class ShoppingListController {
 
     @RequestMapping(value = "/shoppinglist/{id}", method = RequestMethod.GET)
     public String showShoppingList(Model model, @PathVariable Long id) {
-        model.addAttribute("shoppinglist", this.shoppingListRepository.findOne(id));
-        model.addAttribute("shoppers", this.shoppingListRepository.findOne(id).getShoppers());
-        model.addAttribute("items", this.shoppingListRepository.findOne(id).getItems());
-        return "shoppinglist";
+        ShoppingList list = this.shoppingListRepository.findOne(id);
+        if (checkIfOwner(list)) {
+            model.addAttribute("shoppinglist", this.shoppingListRepository.findOne(id));
+            model.addAttribute("shoppers", this.shoppingListRepository.findOne(id).getShoppers());
+            model.addAttribute("items", this.shoppingListRepository.findOne(id).getItems());
+            return "shoppinglist";
+        }
+        return "redirect:/myshoppinglists";
     }
-    
+
     @RequestMapping(value = "/shoppinglist/{id}", method = RequestMethod.DELETE)
     public String deleteShoppingList(@PathVariable Long id) {
-        this.shoppingListRepository.delete(id);
+        ShoppingList list = this.shoppingListRepository.findOne(id);
+        if (checkIfOwner(list)) {
+            this.shoppingListRepository.delete(id);
+        }
         return "redirect:/myshoppinglists";
     }
 
     @RequestMapping(value = "/shoppinglist/{id}", method = RequestMethod.POST)
     public String addItem(@PathVariable Long id, @RequestParam String name, @RequestParam String type) {
-        Item item = new Item();
-        item.setName(name);
-        item.setType(type);
-        this.itemRepository.save(item);
         ShoppingList list = this.shoppingListRepository.findOne(id);
-        list.addItem(item);
-        this.shoppingListRepository.save(list);
+        if (checkIfOwner(list)) {
+            Item item = new Item();
+            item.setName(name);
+            item.setType(type);
+            this.itemRepository.save(item);
+            list.addItem(item);
+            this.shoppingListRepository.save(list);
+        }
 
         return "redirect:/shoppinglist/" + list.getId();
     }
@@ -113,12 +122,27 @@ public class ShoppingListController {
     @RequestMapping(value = "/shoppinglist/{id}/item/{itemid}", method = RequestMethod.DELETE)
     public String deleteItem(@PathVariable Long id, @PathVariable Long itemid) {
         ShoppingList list = this.shoppingListRepository.findOne(id);
-        Item item = this.itemRepository.findOne(itemid);
-        List<Item> items = list.getItems();
-        items.remove(item);
-        list.setItems(items);
-        this.shoppingListRepository.save(list);
+        if (checkIfOwner(list)) {
+            Item item = this.itemRepository.findOne(itemid);
+            List<Item> items = list.getItems();
+            items.remove(item);
+            list.setItems(items);
+            this.shoppingListRepository.save(list);
+        }
 
         return "redirect:/shoppinglist/" + list.getId();
+    }
+
+    private boolean checkIfOwner(ShoppingList sl) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        for (Shopper shopper : sl.getShoppers()) {
+            if (shopper.getName().equals(username)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
