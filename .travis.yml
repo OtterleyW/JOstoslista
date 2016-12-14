@@ -7,6 +7,6 @@ deploy:
   provider: heroku
   api_key:
     secure: X9JlT/x104DSoUkz+QmIiM5gvJslR4+CUN/Iw5bm3WNcVcXIT6wr1Pf9QOSeSSRGCh6rnf0/a9olD+QmwHzdBzHEQ7Xjm+ZKjWR9e8/NZuiAu9DlvtMo/GrP7F7HN8ogFspW1awe6DoecfxXI1XkMnz8CxyJBD72co1LYb+/qKAc9BfvmbT4EAyKFdjIhG8IsFG1z2euRd/V6YbV32pDYBv/kY7hILKiiU7pyHFxn1YamfCvEePS4irm5ZbE10umJfdPdX8sc9y3FnS2/sVLlYmCAns/8kWfdDdW/Q3euQ28pjhgowBUIDhJPcmUwO5I0nrVO4HI0ilGhMlMMJFCc6R6G8D91BGwhPSsCerOuspH7zGvFsu13zQ6lxlYc8GdscUqrIZKN6cOZdjKYMngHz+6U7jKlnP+LaB0Op4neaUnMOVZ7JJrB+T6V2zDp0Eu4zuZYrRoDlxnVPuoOz7bD8BN/0cSQN4hXhCf0zlF/PrvmuqDsUNSZbGFi2JQcwgHxZZxBbCWocWjwlnPuWTtHeD0keECn1/ZAopOZxd89aM71UzzPiKA+ao+q9zXblhnxr72bldHmixIkbVOiBn8SyyT2M4jgk2kZ/40f9YCcoPTiz73jckLBIyH0mjYEdoSvHbpGiWG9u8MuRwox1x+IW4NimqZtW/19kUwKg1ZrTo=
-  app: JOstoslista
+  app: jostoslista
   on:
     repo: OtterleyW/JOstoslista
