@@ -1,6 +1,12 @@
 language: java
 jdk:
-  - oraclejdk7
-
+- oraclejdk7
 after_success:
-  - mvn clean cobertura:cobertura coveralls:report
+- mvn clean cobertura:cobertura coveralls:report
+deploy:
+  provider: heroku
+  api_key:
+    secure: k7PkFoReFsvlxJJSZrzbZz2nB9DQWq6qe8HoOutw7WZL7XsOLIyTMxGUX838UxQfPCG055QrEpYAWKWI7RlQ1pn1KRKwWOWT+WS9soe1SRItp810D2kep4sSV6C0qKKX9o2KUDH/A5wqTxuU3u5F4qKCDK9cPO+J5XhW/PTUugKPiSCJ8hixfpM4yjno1PHmM6kfexQlihJtdJmFLYUfY7h72h0u/iH1FO35UYE2MkSC4ly0ntftq68MKQU9nigLdRUfEHEcjXePAFrRXg2iX3+Bxk8OGusSEaH/IeX2V4OxGGc3sfyi+oU+48qCJ/aDvpaBzc+PhZv3P1gXkleqvSWHDpYspkXlx+/1KvPCKwXoSRHHCFH55HeJ1wPVpTMoZggqm9dc+xIjCq2YPqJ4PWD5bxCgd+bMzbOq0UV/T5zl201II4Iml5/i3aI2XVBki49YF1fYW4jfmuIwocokKvwGmPe+Sip1y0cTIhhi/KorzAP2tihd+PyWjkHXeyKEmgGlY7ZYCyguh1Ped9RXohn1QI3dbgbpwXbGbTQtKIOAqlga2qf8EtJEdX8BRuR6qB4G5ri7iojnmXyRIWrJ2ZrfaSiH6HaxjxNg+r4xa06zYcNJYiR4H/9YROzfmwYdsTA9FBT2Hh6cRbFfy1txecOLOLBJhp1iicbE2MDdzxY=
+  app: JOstoslista
+  on:
+    repo: OtterleyW/JOstoslista
