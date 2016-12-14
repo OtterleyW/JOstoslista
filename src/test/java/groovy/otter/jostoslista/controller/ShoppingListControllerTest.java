@@ -31,49 +31,7 @@ public class ShoppingListControllerTest {
     
     private ShoppingListController shoppingListController;
     
-    @Autowired
-    private ShoppingListRepository shoppingListRepository;
-    @Autowired
-    private ItemRepository itemRepository;
-    @Autowired
-    private ShopperRepository shopperRepository;
 
-    @Test
-    public void testNewShoppingList() {
-        ShoppingList list = new ShoppingList();
-        list.setName("testilista");
-        shoppingListRepository.save(list);
-
-        ShoppingList retrieved =  shoppingListRepository.findOne(list.getId());
-        assertNotNull(retrieved);
-        assertEquals("testilista", retrieved.getName());
-    }
     
-    @Test
-    public void testDeleteShoppingList(){
-        ShoppingList list = new ShoppingList();
-        list.setName("testilista");
-        shoppingListRepository.save(list);
-        assertNotNull(shoppingListRepository.findOne(list.getId()));
-        
-        shoppingListRepository.delete(list.getId());
-        assertNull(shoppingListRepository.findOne(list.getId()));
-    }
-    
-    @Test
-    public void testAddItem(){
-        ShoppingList list = new ShoppingList();
-        list.setName("testilista");
-        shoppingListRepository.save(list);
-        
-        Item item = new Item();
-        item.setName("testiostos");
-        item.setType("testi");
-        itemRepository.save(item);
-        
-        list.addItem(item);
-        
-        assertTrue(list.getItems().contains(item));
-    }
 
 }

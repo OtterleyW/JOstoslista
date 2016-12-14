@@ -29,7 +29,7 @@ public class ShoppingList extends AbstractPersistable<Long>{
     private String name;
     @Temporal(TemporalType.DATE)
     private Date createdAt;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Item> items;
     @ManyToMany
     private List<Shopper> shoppers;

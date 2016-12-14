@@ -40,8 +40,6 @@ public class ShoppingListController {
     @Autowired
     private ItemRepository itemRepository;
     @Autowired
-    private ShopperRepository shopperRepository;
-    @Autowired
     private ShoppingListService shoppingListService;
 
     @ModelAttribute("shoppingList")
@@ -57,7 +55,7 @@ public class ShoppingListController {
     //Näyttää kaikki käyttäjän omat ostoslistat
     @RequestMapping(value = "/myshoppinglists", method = RequestMethod.GET)
     public String myShoppingLists(Model model) {
-        model.addAttribute("shoppinglists", shoppingListService.getOwnShoppingLists());
+        model.addAttribute("shoppinglists", shoppingListService.getOwnShoppingLists(getUsername()));
         return "myshoppinglists";
     }
 
@@ -66,11 +64,11 @@ public class ShoppingListController {
     public String newShoppingList(@Valid @ModelAttribute("shoppingList") ShoppingList shoppingList, BindingResult bindingResult, Model model, @RequestParam String name) {
         if (bindingResult.hasErrors()) {
             //Jotta virheviestit ei katoa matkalla, ei voi käyttää redirectiä, vaan pitää lisätä modelin kautta tiedot myshoppinglists näkymään
-            model.addAttribute("shoppinglists", shoppingListService.getOwnShoppingLists());
+            model.addAttribute("shoppinglists", shoppingListService.getOwnShoppingLists(getUsername()));
             return "myshoppinglists";
         }
 
-        shoppingListService.saveShoppingList(name);
+        shoppingListService.saveShoppingList(name, getUsername());
 
         return "redirect:/myshoppinglists";
     }
@@ -80,7 +78,7 @@ public class ShoppingListController {
     public String showShoppingList(Model model, @PathVariable Long id) {
         ShoppingList list = this.shoppingListRepository.findOne(id);
         //Tarkistaa onko sisäänkirjautunut käyttäjä ostoslistan omistaja
-        if (shoppingListService.checkIfOwner(list)) {
+        if (shoppingListService.checkIfOwner(list, getUsername())) {
             model.addAttribute("shoppinglist", this.shoppingListRepository.findOne(id));
             model.addAttribute("shoppers", this.shoppingListRepository.findOne(id).getShoppers());
             model.addAttribute("items", this.shoppingListRepository.findOne(id).getItems());
@@ -95,7 +93,7 @@ public class ShoppingListController {
     public String deleteShoppingList(@PathVariable Long id) {
         ShoppingList list = this.shoppingListRepository.findOne(id);
         //Tarkistaa onko sisäänkitjautunut käyttäjä ostoslistan omistaja ennen kuin suorittaa poistamisen
-        if (shoppingListService.checkIfOwner(list)) {
+        if (shoppingListService.checkIfOwner(list, getUsername())) {
             shoppingListService.deleteShoppingList(list);
         }
         return "redirect:/myshoppinglists";
@@ -114,7 +112,7 @@ public class ShoppingListController {
 
         ShoppingList list = this.shoppingListRepository.findOne(id);
         //Tarkistaa onko käyttäjä listan omistaja
-        if (shoppingListService.checkIfOwner(list)) {
+        if (shoppingListService.checkIfOwner(list, getUsername())) {
             shoppingListService.addItemToShoppingList(name, type, list);
         }
 
@@ -126,12 +124,18 @@ public class ShoppingListController {
     public String deleteItem(@PathVariable Long id, @PathVariable Long itemid) {
         ShoppingList list = this.shoppingListRepository.findOne(id);
         //Tarkistaa onko kirjautunut käyttäjä listan ommistaja ennen kuin tekee poiston
-        if (shoppingListService.checkIfOwner(list)) {
+        if (shoppingListService.checkIfOwner(list, getUsername())) {
             Item item = this.itemRepository.findOne(itemid);
             shoppingListService.deleteItemFromShoppingList(list, item);
         }
 
         return "redirect:/shoppinglist/" + list.getId();
+    }
+    
+    //Palauttaa kirjautuneen käyttäjän käyttäjänimen
+    private String getUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName();
     }
 
 }

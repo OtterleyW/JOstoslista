@@ -33,8 +33,8 @@ public class ShoppingListService {
     @Autowired
     private ShopperRepository shopperRepository;
 
-    public void saveShoppingList(String name) {
-        Shopper shopper = checkIfShopperExists();
+    public void saveShoppingList(String name, String username) {
+        Shopper shopper = checkIfShopperExists(username);
 
         //Luo uuden ostoslistan
         ShoppingList list = new ShoppingList();
@@ -54,8 +54,8 @@ public class ShoppingListService {
         //Tallentaa ostoslistan
         this.shoppingListRepository.save(list);
     }
-    
-    public void deleteShoppingList(ShoppingList list){
+
+    public void deleteShoppingList(ShoppingList list) {
         this.shoppingListRepository.delete(list);
     }
 
@@ -80,27 +80,29 @@ public class ShoppingListService {
             }
         }
 
+        //Jos ostoslistalla ei ole vielä yhtään itemiä, luodaan ensin uusi lista itemeistä ja lisätään sitten luotu item listalle.
+        if (list.getItems() == null) {
+            List<Item> items = new ArrayList<Item>();
+            items.add(newItem);
+            list.setItems(items);
+        } else {
+            list.addItem(newItem);
+        }
+
         //Tallentaa ostoksen ostoslistalle
         list.addItem(newItem);
         this.shoppingListRepository.save(list);
     }
-    
-    public void deleteItemFromShoppingList(ShoppingList list, Item item){
+
+    public void deleteItemFromShoppingList(ShoppingList list, Item item) {
         List<Item> items = list.getItems();
         items.remove(item);
         list.setItems(items);
         this.shoppingListRepository.save(list);
     }
 
-    //Palauttaa kirjautuneen käyttäjän käyttäjänimen
-    private String getUsername() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
-    }
-
     //Jos sisäänkirjautunutta käyttäjää ei löydy tietokannasta, luo uuden Shopper-olion
-    private Shopper checkIfShopperExists() {
-        String username = getUsername();
+    private Shopper checkIfShopperExists(String username) {
         if (this.shopperRepository.findByName(username) == null) {
             Shopper shopper = new Shopper();
             shopper.setName(username);
@@ -110,9 +112,9 @@ public class ShoppingListService {
     }
 
     //Tarkistaa onko kirjautunut käyttäjä ostoslistan sl omistajissa
-    public boolean checkIfOwner(ShoppingList sl) {
+    public boolean checkIfOwner(ShoppingList sl, String username) {
         for (Shopper shopper : sl.getShoppers()) {
-            if (shopper.getName().equals(getUsername())) {
+            if (shopper.getName().equals(username)) {
                 return true;
             }
         }
@@ -120,10 +122,10 @@ public class ShoppingListService {
     }
 
     //Palauttaa kaikki kirjautuneen käyttäjän ostoslistat, joissa käyttäjä on omistajissa 
-    public List<ShoppingList> getOwnShoppingLists() {
+    public List<ShoppingList> getOwnShoppingLists(String username) {
         List<ShoppingList> ownLists = new ArrayList<ShoppingList>();
         for (ShoppingList sl : this.shoppingListRepository.findAll()) {
-            if (checkIfOwner(sl)) {
+            if (checkIfOwner(sl, username)) {
                 ownLists.add(sl);
             }
         }
