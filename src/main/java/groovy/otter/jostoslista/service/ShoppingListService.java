@@ -55,7 +55,11 @@ public class ShoppingListService {
         this.shoppingListRepository.save(list);
     }
     
-    public void addItemToShoppingList(String name, String type, ShoppingList list){
+    public void deleteShoppingList(ShoppingList list){
+        this.shoppingListRepository.delete(list);
+    }
+
+    public void addItemToShoppingList(String name, String type, ShoppingList list) {
         Item newItem = new Item();
         newItem.setName(name);
         newItem.setType(type);
@@ -80,8 +84,15 @@ public class ShoppingListService {
         list.addItem(newItem);
         this.shoppingListRepository.save(list);
     }
+    
+    public void deleteItemFromShoppingList(ShoppingList list, Item item){
+        List<Item> items = list.getItems();
+        items.remove(item);
+        list.setItems(items);
+        this.shoppingListRepository.save(list);
+    }
 
-    //Palauttaa kirjautuneen käyttäjän usernamen tekstijonona
+    //Palauttaa kirjautuneen käyttäjän käyttäjänimen
     private String getUsername() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth.getName();
@@ -96,6 +107,27 @@ public class ShoppingListService {
             return this.shopperRepository.save(shopper);
         }
         return this.shopperRepository.findByName(username);
+    }
+
+    //Tarkistaa onko kirjautunut käyttäjä ostoslistan sl omistajissa
+    public boolean checkIfOwner(ShoppingList sl) {
+        for (Shopper shopper : sl.getShoppers()) {
+            if (shopper.getName().equals(getUsername())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Palauttaa kaikki kirjautuneen käyttäjän ostoslistat, joissa käyttäjä on omistajissa 
+    public List<ShoppingList> getOwnShoppingLists() {
+        List<ShoppingList> ownLists = new ArrayList<ShoppingList>();
+        for (ShoppingList sl : this.shoppingListRepository.findAll()) {
+            if (checkIfOwner(sl)) {
+                ownLists.add(sl);
+            }
+        }
+        return ownLists;
     }
 
 }

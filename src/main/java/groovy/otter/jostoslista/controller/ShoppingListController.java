@@ -57,7 +57,7 @@ public class ShoppingListController {
     //Näyttää kaikki käyttäjän omat ostoslistat
     @RequestMapping(value = "/myshoppinglists", method = RequestMethod.GET)
     public String myShoppingLists(Model model) {
-        model.addAttribute("shoppinglists", getOwnShoppingLists());
+        model.addAttribute("shoppinglists", shoppingListService.getOwnShoppingLists());
         return "myshoppinglists";
     }
 
@@ -66,7 +66,7 @@ public class ShoppingListController {
     public String newShoppingList(@Valid @ModelAttribute("shoppingList") ShoppingList shoppingList, BindingResult bindingResult, Model model, @RequestParam String name) {
         if (bindingResult.hasErrors()) {
             //Jotta virheviestit ei katoa matkalla, ei voi käyttää redirectiä, vaan pitää lisätä modelin kautta tiedot myshoppinglists näkymään
-            model.addAttribute("shoppinglists", getOwnShoppingLists());
+            model.addAttribute("shoppinglists", shoppingListService.getOwnShoppingLists());
             return "myshoppinglists";
         }
 
@@ -80,7 +80,7 @@ public class ShoppingListController {
     public String showShoppingList(Model model, @PathVariable Long id) {
         ShoppingList list = this.shoppingListRepository.findOne(id);
         //Tarkistaa onko sisäänkirjautunut käyttäjä ostoslistan omistaja
-        if (checkIfOwner(list)) {
+        if (shoppingListService.checkIfOwner(list)) {
             model.addAttribute("shoppinglist", this.shoppingListRepository.findOne(id));
             model.addAttribute("shoppers", this.shoppingListRepository.findOne(id).getShoppers());
             model.addAttribute("items", this.shoppingListRepository.findOne(id).getItems());
@@ -95,8 +95,8 @@ public class ShoppingListController {
     public String deleteShoppingList(@PathVariable Long id) {
         ShoppingList list = this.shoppingListRepository.findOne(id);
         //Tarkistaa onko sisäänkitjautunut käyttäjä ostoslistan omistaja ennen kuin suorittaa poistamisen
-        if (checkIfOwner(list)) {
-            this.shoppingListRepository.delete(id);
+        if (shoppingListService.checkIfOwner(list)) {
+            shoppingListService.deleteShoppingList(list);
         }
         return "redirect:/myshoppinglists";
     }
@@ -114,8 +114,7 @@ public class ShoppingListController {
 
         ShoppingList list = this.shoppingListRepository.findOne(id);
         //Tarkistaa onko käyttäjä listan omistaja
-        if (checkIfOwner(list)) {
-
+        if (shoppingListService.checkIfOwner(list)) {
             shoppingListService.addItemToShoppingList(name, type, list);
         }
 
@@ -127,41 +126,12 @@ public class ShoppingListController {
     public String deleteItem(@PathVariable Long id, @PathVariable Long itemid) {
         ShoppingList list = this.shoppingListRepository.findOne(id);
         //Tarkistaa onko kirjautunut käyttäjä listan ommistaja ennen kuin tekee poiston
-        if (checkIfOwner(list)) {
+        if (shoppingListService.checkIfOwner(list)) {
             Item item = this.itemRepository.findOne(itemid);
-            List<Item> items = list.getItems();
-            items.remove(item);
-            list.setItems(items);
-            this.shoppingListRepository.save(list);
+            shoppingListService.deleteItemFromShoppingList(list, item);
         }
 
         return "redirect:/shoppinglist/" + list.getId();
     }
 
-    //Palauttaa kirjautuneen käyttäjän usernamen tekstijonona
-    private String getUsername() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
-    }
-
-    //Tarkistaa onko kirjautunut käyttäjä ostoslistan sl omistajissa
-    private boolean checkIfOwner(ShoppingList sl) {
-        for (Shopper shopper : sl.getShoppers()) {
-            if (shopper.getName().equals(getUsername())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //Palauttaa kaikki kirjautuneen käyttäjän ostoslistat, joissa käyttäjä on omistajissa 
-    private List<ShoppingList> getOwnShoppingLists() {
-        List<ShoppingList> ownLists = new ArrayList<ShoppingList>();
-        for (ShoppingList sl : this.shoppingListRepository.findAll()) {
-            if (checkIfOwner(sl)) {
-                ownLists.add(sl);
-            }
-        }
-        return ownLists;
-    }
 }
