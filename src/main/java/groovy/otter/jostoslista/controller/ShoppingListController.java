@@ -11,6 +11,7 @@ import groovy.otter.jostoslista.domain.ShoppingList;
 import groovy.otter.jostoslista.repository.ItemRepository;
 import groovy.otter.jostoslista.repository.ShopperRepository;
 import groovy.otter.jostoslista.repository.ShoppingListRepository;
+import groovy.otter.jostoslista.service.ShoppingListService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,8 @@ public class ShoppingListController {
     private ItemRepository itemRepository;
     @Autowired
     private ShopperRepository shopperRepository;
+    @Autowired
+    private ShoppingListService shoppingListService;
 
     @ModelAttribute("shoppingList")
     private ShoppingList getShoppingList() {
@@ -60,38 +63,14 @@ public class ShoppingListController {
 
     //Luo uuden ostoslistan
     @RequestMapping(value = "/myshoppinglists", method = RequestMethod.POST)
-    public String newShoppingList(@Valid @ModelAttribute("shoppingList") ShoppingList shoppingList, BindingResult bindingResult, @RequestParam String name, Model model) {
+    public String newShoppingList(@Valid @ModelAttribute("shoppingList") ShoppingList shoppingList, BindingResult bindingResult, Model model, @RequestParam String name) {
         if (bindingResult.hasErrors()) {
             //Jotta virheviestit ei katoa matkalla, ei voi käyttää redirectiä, vaan pitää lisätä modelin kautta tiedot myshoppinglists näkymään
             model.addAttribute("shoppinglists", getOwnShoppingLists());
             return "myshoppinglists";
         }
 
-        //Jos sisäänkirjautunutta käyttäjää ei löydy tietokannasta, luo uuden Shopper-olion
-        String username = getUsername();
-        if (this.shopperRepository.findByName(username) == null) {
-            Shopper shopper = new Shopper();
-            shopper.setName(username);
-            this.shopperRepository.save(shopper);
-        }
-
-        //Luo uuden ostoslistan
-        ShoppingList list = new ShoppingList();
-        list.setName(name);
-        Date date = new Date();
-        list.setCreatedAt(date);
-
-        //Jos ostoslistalla ei ole vielä yhtään omistajaa, luodaan ensin uusi lista ja lisätään sitten kirjautunut käyttäjä omistajaksi. Muuten lisätään käyttäjä suoraan omistajien listalle.
-        if (list.getShoppers() == null) {
-            List<Shopper> shoppers = new ArrayList<Shopper>();
-            shoppers.add(this.shopperRepository.findByName(username));
-            list.setShoppers(shoppers);
-        } else {
-            list.addShopper(this.shopperRepository.findByName(username));
-        }
-
-        //Tallentaa ostoslistan
-        this.shoppingListRepository.save(list);
+        shoppingListService.saveShoppingList(name);
 
         return "redirect:/myshoppinglists";
     }
@@ -137,29 +116,7 @@ public class ShoppingListController {
         //Tarkistaa onko käyttäjä listan omistaja
         if (checkIfOwner(list)) {
 
-            Item newItem = new Item();
-            newItem.setName(name);
-            newItem.setType(type);
-
-            //Jos tietokannasta ei löydy samannimistä itemiä, tallennetaan uusi item
-            if (this.itemRepository.findByName(name) == null) {
-                this.itemRepository.save(newItem);
-            } else {
-                Boolean tallenna = true;
-                //Jos tietokannasta löytyy samannimisiä itemejä, tarkistetaan, löytyykö item, jolla on sama tyyppi
-                for (Item i : this.itemRepository.findByName(name)) {
-                    if (i.getType().equals(type)) {
-                        tallenna = false;
-                    }
-                }
-                if (tallenna) {
-                    this.itemRepository.save(newItem);
-                }
-            }
-
-            //Tallentaa ostoksen ostoslistalle
-            list.addItem(newItem);
-            this.shoppingListRepository.save(list);
+            shoppingListService.addItemToShoppingList(name, type, list);
         }
 
         return "redirect:/shoppinglist/" + list.getId();
