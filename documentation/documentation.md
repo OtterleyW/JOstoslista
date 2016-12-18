@@ -16,4 +16,15 @@ JOstoslista on sovellus, jotta käyttäjä voi luoda omia ostoslistoja kaupparei
 * Jos listalla useampi käyttäjä, ostoksen ”varaaminen” ennen kuin ostoksen merkkaa ostetuksi 
 * Ostosten järjestäminen ostoslistaan tyypin mukaan
 * Kauppojen ja kauppakohtaisten osastojärjestysten lisääminen niin, että ostoslistalla olevat asiat saa oikeaan järjestykseen tiettyä kauppaa ajatellen (vaatii lisää tietokantatauluja)
+=======
+*Käyttäjä voi luoda ja poistaa ostoslistoja
+*Käyttäjä voi lisätä ostoslistalle tuotteita ja poistaa niitä
+
+###Toteuttamatta jääneet käyttötapaukset
+*Ylläpitäjä voi tarkastella kaikkia sovelluksen tuotteita
+*Käyttäjän rekisteröityminen
+*Ostoslistan jakaminen toisen käyttäjän kanssa
+*Jos listalla useampi käyttäjä, ostoksen ”varaaminen” ennen kuin ostoksen merkkaa ostetuksi 
+*Ostosten järjestäminen ostoslistaan tyypin mukaan
+*Kauppojen ja kauppakohtaisten osastojärjestysten lisääminen niin, että ostoslistalla olevat asiat saa oikeaan järjestykseen tiettyä kauppaa ajatellen (vaatii lisää tietokantatauluja)
 
