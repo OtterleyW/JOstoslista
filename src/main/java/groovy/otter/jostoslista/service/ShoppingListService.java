@@ -85,8 +85,6 @@ public class ShoppingListService {
             List<Item> items = new ArrayList<Item>();
             items.add(newItem);
             list.setItems(items);
-        } else {
-            list.addItem(newItem);
         }
 
         //Tallentaa ostoksen ostoslistalle
