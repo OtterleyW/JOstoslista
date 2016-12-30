@@ -72,6 +72,7 @@ public class ShoppingListService {
             //Jos tietokannasta löytyy samannimisiä itemejä, tarkistetaan, löytyykö item, jolla on sama tyyppi
             for (Item i : this.itemRepository.findByName(name)) {
                 if (i.getType().equals(type)) {
+                    newItem = i;
                     tallenna = false;
                 }
             }
@@ -88,7 +89,8 @@ public class ShoppingListService {
         }
 
         //Tallentaa ostoksen ostoslistalle
-        list.addItem(newItem);
+        Item i = this.itemRepository.findOne(newItem.getId());
+        list.addItem(i);
         this.shoppingListRepository.save(list);
     }
 

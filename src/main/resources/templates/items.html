@@ -37,43 +37,8 @@
 
         <div class="container">
 
-            <!-- Ostoslistan tiedot -->
-            <h1><span th:text="${shoppinglist.name}">Ostoslistan nimi</span></h1>
-            <p>
-                Luotu <span th:text="${#dates.format(shoppinglist.createdAt, 'yyyy-MM-dd')}">00.00.0000</span>
-            </p>
-
-            <div th:if="${shoppers != null}">
-                <h3>Omistajat</h3>
-                <p th:each="shopper : ${shoppers}">
-                    <span th:text="${shopper.name}">Nimi</span>
-                </p>
-            </div>
-            
-            <!-- Lisää ostos -lomake -->
-            <h2>Lisää ostos</h2>
-
-            <form th:action="@{/shoppinglist/{id}(id=${shoppinglist.id})}" th:object="${item}" method="POST">
-                <div class="form-group">
-                    <label for="name">Nimi:</label>
-                    <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
-                        Nimi ei voi olla tyhjä
-                    </div>
-                    <input type="text" class="form-control" name="name" />
-                </div>
-                <div class="form-group">
-                    <label for="type">Tyyppi:</label>
-                    <div class="alert alert-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">
-                        Nimi ei voi olla tyhjä
-                    </div>
-                    <input type="text" class="form-control" name="type" />
-                </div>
-                <input type="submit" class="btn btn-default" value="Lisää listalle"></input>
-            </form>
-
-            <hr />
-            
-            <!-- Taulukko ostoslistalla olevista ostoksista -->
+          
+            <!-- Lista listoilla olevista ostkosista -->
             
             <h2>Ostokset</h2>
             <table class="table table-striped" th:if="${items != null}">
@@ -81,7 +46,6 @@
                     <tr>
                         <th>Ostos</th>
                         <th>Tyyppi</th>
-                        <th></th>
 
                     </tr>
                 </thead>
@@ -89,7 +53,7 @@
                     <tr th:each="item : ${items}">
                         <td class="ostos"><span th:text="${item.name}">Nimi</span></td>
                         <td><span th:text="${item.type}">Tyyppi</span></td>
-                        <td><form th:action="@{/shoppinglist/{id}/item/{itemid}(id=${shoppinglist.id}, itemid=${item.id})}" th:method="DELETE"><input type="submit" class="btn btn-default" value="Ostettu!"></input></form></td>
+                        <td><span th:text="${item.shoppingLists}">Ostoslistat</span></td>
                     </tr>
                 </tbody>
             </table>

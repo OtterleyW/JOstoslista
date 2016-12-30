@@ -26,6 +26,7 @@
                 </div>
                 <ul class="nav navbar-nav">
                     <li><a href="/myshoppinglists">Kaikki ostoslistat</a></li>
+                    <li sec:authorize="hasAuthority('ROLE_ADMIN')"><a href="/items">Listoille lisätyt ostokset</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><form method="post" action="#" th:action="@{/logout}"><input type="submit" name="logout" value="Logout"/></form></li>

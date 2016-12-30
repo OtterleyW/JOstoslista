@@ -49,4 +49,5 @@ public class Item extends AbstractPersistable<Long> {
         this.shoppingLists = shoppingLists;
     }
 
+
 }
